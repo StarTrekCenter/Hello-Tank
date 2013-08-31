@@ -1,37 +1,48 @@
 #include "Window.h"
 #include "Event.h"
 #include "Timer.h"
-
+#include "Tank.h"
 #include <iostream>
 using namespace std;
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+Tank *pTank;
+SDL_Texture *texBackground;
 SDL_EventType funKeyDown(SDL_Event evt)
 {
 	return (SDL_EventType)SDL_QUIT;
 }
 
-int myCount = 0;
 SDL_EventType onTimer(SDL_Event evt)
 {
-	cout<<(int)evt.user.data1<<"   "<<myCount++<<endl;
+	pTank->Rotate(100,true);
+	pTank->Move(100);
+	Window::Draw(texBackground,Window::Box());
+	pTank->Draw();
+	Window::Present();
 	return (SDL_EventType)evt.type;
 }
 
 int main(int argv, char** argc)
 {
-	Window win;
-	win.Init("MyWindow");
+	Window::Init("MyWindow");
+	
+	pTank = new Tank();
+	pTank->Init(300,300,30);
+	
 
-	SDL_Texture *texBackground = win.LoadImage("../Res/Image/background.bmp");
-	win.Clear();
-	win.Draw(texBackground,win.Box());
-	win.Present();
+	texBackground = Window::LoadImage("../Res/Image/background.bmp");
+	Window::Clear();
+	Window::Draw(texBackground,Window::Box());
+	pTank->Draw();
+	Window::Present();
+
+
 
 	Timer time;
-	time.StartTimer(1000,onTimer);
+	time.StartTimer(100,onTimer);
 	Event::AddEvent(SDL_KEYDOWN,funKeyDown);
 	Event::StartListenEvent();
 

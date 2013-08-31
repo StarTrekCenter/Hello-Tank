@@ -15,27 +15,27 @@ public:
 	Window(void);
 	~Window(void);
 	//Start SDL and TTF, create the window and renderer
-	void Init(std::string title);
+	static void Init(std::string title);
 	//Quit SDL and TTF
-	void Quit();
+	static void Quit();
 	//Draw an SDL_Texture
-	void Draw(SDL_Texture *tex, SDL_Rect &dstRect, SDL_Rect *clip = NULL,float angle = 0.0, 
+	static void Draw(SDL_Texture *tex, SDL_Rect &dstRect, SDL_Rect *clip = NULL,float angle = 0.0, 
 				  int xPivot = 0, int yPivot = 0,SDL_RendererFlip flip = SDL_FLIP_NONE);
 	//Load an image
-	SDL_Texture* LoadImage(std::string file);
+	static SDL_Texture* LoadImage(std::string file);
 	//Render some text
-	SDL_Texture* RenderText(std::string, std::string, SDL_Color, int);
+	static SDL_Texture* RenderText(std::string, std::string, SDL_Color, int);
 	//Clear window
-	void Clear();
+	static void Clear();
 	//Present renderer
-	void Present();
+	static void Present();
 	//Get the window's box
-	SDL_Rect Box();
+	static SDL_Rect Box();
 
 private:
-	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	SDL_Rect mBox;
+	static SDL_Window* mWindow;
+	static SDL_Renderer* mRenderer;
+	static SDL_Rect mBox;
 
 };
 

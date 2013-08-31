@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Window::Window(void): mWindow(nullptr), mRenderer(nullptr)
+Window::Window(void)
 {
 }
 
@@ -11,6 +11,10 @@ Window::Window(void): mWindow(nullptr), mRenderer(nullptr)
 Window::~Window(void)
 {
 }
+
+SDL_Window* Window::mWindow = nullptr;
+SDL_Renderer* Window::mRenderer = nullptr;
+SDL_Rect Window::mBox;
 
 void Window::Init(string title)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include <map>
+#include "Game.h"
 
 class Event
 {

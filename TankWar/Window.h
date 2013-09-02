@@ -16,6 +16,7 @@ public:
 	~Window(void);
 	//Start SDL and TTF, create the window and renderer
 	static void Init(std::string title);
+	static void Init(std::string title,int screenWidth, int screenHeight);
 	//Quit SDL and TTF
 	static void Quit();
 	//Draw an SDL_Texture

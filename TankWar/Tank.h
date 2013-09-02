@@ -12,10 +12,16 @@ public:
 	~Tank(void);
 
 	void Init(int x, int y, float direction);
-	void Move(Uint32 msTime);
-	void Rotate(Uint32 msTime, bool right);
-	void Draw();
+	
+	void Move(Uint32 msTime, bool forward = true);
+	void Rotate(Uint32 msTime, bool right = true);
+	void MoveAndRotateItself(Uint32 msTime);
+	void SetMoving(bool forward = true);
+	void SetStopMoving();
+	void SetRotating(bool right = true);
+	void SetStopRotating();
 
+	void Draw();
 private:
 	float mLocationX;
 	float mLocationY;
@@ -25,5 +31,9 @@ private:
 	float mRotateSpeed;
 
 	SDL_Texture *mTexTank;
+	bool mIsMoving;
+	bool mIsMovingForward;
+	bool mIsRotating;
+	bool mIsRotatingRight;
 };
 

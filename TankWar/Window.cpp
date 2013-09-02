@@ -16,7 +16,12 @@ SDL_Window* Window::mWindow = nullptr;
 SDL_Renderer* Window::mRenderer = nullptr;
 SDL_Rect Window::mBox;
 
-void Window::Init(string title)
+void Window::Init(std::string title)
+{
+	Init(title,SCREEN_WIDTH,SCREEN_HEIGHT);
+}
+
+void Window::Init(string title,int screenWidth, int screenHeight)
 {
 	//initialize all SDL subsystems
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -28,8 +33,8 @@ void Window::Init(string title)
 	//Setup our window size
 	mBox.x = 0;
 	mBox.y = 0;
-	mBox.w = SCREEN_WIDTH;
-	mBox.h = SCREEN_HEIGHT;
+	mBox.w = screenWidth;
+	mBox.h = screenHeight;
 
 	//Create our window
 	mWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, 

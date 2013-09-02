@@ -10,7 +10,7 @@ public:
 	Timer(void);
 	~Timer(void);
 
-	void StartTimer(Uint32 ms,SDL_EventType(*onTime)(SDL_Event));
+	void StartTimer(Uint32 ms,SDL_EventType(*onTimer)(SDL_Event),void* userData = nullptr);
 	void StopTimer();
 
 private:
@@ -23,5 +23,6 @@ private:
 	SDL_EventType mTimeEventType;
 	SDL_Thread *mThreadTimer;
 
+	void* mUserDate;
 };
 

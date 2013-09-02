@@ -8,7 +8,8 @@ Timer::Timer(void)
 	:mTimeStarted(false),
 	mTimeDelay(0),
 	mTimeEventType(SDL_FIRSTEVENT),
-	mThreadTimer(NULL)
+	mThreadTimer(NULL),
+	mUserDate(nullptr)
 {
 }
 
@@ -17,9 +18,10 @@ Timer::~Timer(void)
 {
 }
 
-void Timer::StartTimer(Uint32 ms,SDL_EventType(*onTimer)(SDL_Event))
+void Timer::StartTimer(Uint32 ms,SDL_EventType(*onTimer)(SDL_Event),void* userData)
 {
 	mTimeDelay = ms;
+	mUserDate = userData;
 
 	if (!mTimeStarted)
 	{
@@ -50,14 +52,10 @@ int Timer::TimerThread(void *data)
 
 	if (timer->mTimeDelay > 0)
 	{
-		int count = 0;
-		int ticks;
 		while(timer->mTimeStarted)
 		{
 			SDL_Delay(timer->mTimeDelay);
-			ticks = SDL_GetTicks();
-			Event::PushEvent(timer->mTimeEventType,TIME_CODE,(void*)count,(void*)ticks);
-			count++;
+			Event::PushEvent(timer->mTimeEventType,TIME_CODE,timer->mUserDate,nullptr);
 		}
 	}
 

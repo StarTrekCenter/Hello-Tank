@@ -33,6 +33,7 @@ Game::~Game(void)
 Stage* Game::mpStage = nullptr;
 int Game::mUpdateTime = UPDATE_TIME;
 std::list<Tank*> Game::mpTanks;
+std::list<Bullet*> Game::mpBullets;
 Tank* Game::mDefaultTank;
 
 void Game::Start()
@@ -71,6 +72,15 @@ void Game::Update()
 				(*itTank)->MoveAndRotateItself(mUpdateTime);
 			}
 		}
+		
+		list<Bullet*>::iterator itBullet;
+		for (itBullet = mpBullets.begin();itBullet != mpBullets.end(); itBullet++)
+		{
+			if (nullptr != *itBullet)
+			{
+				(*itBullet)->MoveAndRotateItself(mUpdateTime);
+			}
+		}
 	}
 }
 
@@ -88,6 +98,14 @@ void Game::DrawAll()
 			if (nullptr != *itTank)
 			{
 				(*itTank)->Draw();
+			}
+		}
+		list<Bullet*>::iterator itBullet;
+		for (itBullet = mpBullets.begin();itBullet != mpBullets.end(); itBullet++)
+		{
+			if (nullptr != *itBullet)
+			{
+				(*itBullet)->Draw();
 			}
 		}
 
@@ -109,10 +127,58 @@ SDL_EventType Game::TimerEvent(SDL_Event evt)
 
 Tank* Game::AddTank(int x, int y, float direction)
 {
-	Tank* pTank = new Tank();
-	pTank->Init(x,y,direction);
+	Tank* pTank = new Tank(x,y,direction);
 	mpTanks.push_back(pTank);
 	return pTank;
+}
+
+SDL_EventType Game::KeyDownEvent(SDL_Event evt)
+{
+	switch (evt.key.keysym.sym)
+	{
+	case SDLK_UP:
+		MoveDefaultTank(true);
+		break;
+	case SDLK_DOWN:
+		MoveDefaultTank(false);
+		break;
+	case SDLK_RIGHT:
+		RotateDefaultTank(true);
+		break;
+	case SDLK_LEFT:
+		RotateDefaultTank(false);
+		break;
+	default:
+		break;
+	}
+
+	return (SDL_EventType)evt.type;
+}
+
+SDL_EventType Game::KeyUpEvent(SDL_Event evt)
+{
+	switch (evt.key.keysym.sym)
+	{
+	case SDLK_UP:
+		StopMoveDefaultTank();
+		break;
+	case SDLK_DOWN:
+		StopMoveDefaultTank();
+		break;
+	case SDLK_RIGHT:
+		StopRotateDefaultTank();
+		break;
+	case SDLK_LEFT:
+		StopRotateDefaultTank();
+		break;
+	case SDLK_SPACE:
+		DefaultTankFire();
+		break;
+	default:
+		break;
+	}
+
+	return (SDL_EventType)evt.type;
 }
 
 void Game::AddDefaultTank()
@@ -146,47 +212,8 @@ void Game::StopRotateDefaultTank()
 {
 	mDefaultTank->SetStopRotating();
 }
-
-SDL_EventType Game::KeyDownEvent(SDL_Event evt)
+void Game::DefaultTankFire()
 {
-	switch (evt.key.keysym.sym)
-	{
-	case SDLK_UP:
-		MoveDefaultTank(true);
-		break;
-	case SDLK_RIGHT:
-		RotateDefaultTank(true);
-		break;	case SDLK_DOWN:
-		MoveDefaultTank(false);
-		break;
-	case SDLK_LEFT:
-		RotateDefaultTank(false);
-		break;
-	default:
-		break;
-	}
-
-	return (SDL_EventType)evt.type;
-}
-
-SDL_EventType Game::KeyUpEvent(SDL_Event evt)
-{
-	switch (evt.key.keysym.sym)
-	{
-	case SDLK_UP:
-		StopMoveDefaultTank();
-		break;
-	case SDLK_RIGHT:
-		StopRotateDefaultTank();
-		break;	case SDLK_DOWN:
-		StopMoveDefaultTank();
-		break;
-	case SDLK_LEFT:
-		StopRotateDefaultTank();
-		break;
-	default:
-		break;
-	}
-
-	return (SDL_EventType)evt.type;
+	Bullet* pBullet = mDefaultTank->Fire();
+	mpBullets.push_back(pBullet);
 }

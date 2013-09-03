@@ -1,39 +1,23 @@
 #pragma once
+#include "Moveable.h"
+#include "Bullet.h"
 #include "SDL.h"
 
-class Tank
+class Tank : public Moveable
 {
 public:
 	static float SPEED;
 	static float ROTATE_SPEED;
 	static int SIZE;
 public:
-	Tank(void);
+	Tank(int x, int y, float direction, float speed = SPEED, int size = SIZE, float rotateSpeed = ROTATE_SPEED);
 	~Tank(void);
-
-	void Init(int x, int y, float direction);
 	
-	void Move(Uint32 msTime, bool forward = true);
-	void Rotate(Uint32 msTime, bool right = true);
-	void MoveAndRotateItself(Uint32 msTime);
-	void SetMoving(bool forward = true);
-	void SetStopMoving();
-	void SetRotating(bool right = true);
-	void SetStopRotating();
+	Bullet* Fire();
 
 	void Draw();
 private:
-	float mLocationX;
-	float mLocationY;
 	int mSize;		//the width or height of the tank rectangle
-	float mDirection;	//0 => x-axis,  90 =>y-axis
-	float mSpeed;
-	float mRotateSpeed;
-
 	SDL_Texture *mTexTank;
-	bool mIsMoving;
-	bool mIsMovingForward;
-	bool mIsRotating;
-	bool mIsRotatingRight;
 };
 

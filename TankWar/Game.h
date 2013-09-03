@@ -3,6 +3,8 @@
 #include "SDL.h"
 #include "Tank.h"
 #include "Stage.h"
+#include "Bullet.h"
+#include "Moveable.h"
 
 class Game
 {
@@ -20,25 +22,28 @@ public:
 	static bool IsInit();
 	
 	static void Update();
+	static void MoveAll(std::list<Moveable*> mover);
 	static void DrawAll();
 	static void onUpdateTimer();
 	static SDL_EventType TimerEvent(SDL_Event evt);
 
 	static Tank* AddTank(int x, int y, float direction);
 	
+	static SDL_EventType KeyDownEvent(SDL_Event evt);
+	static SDL_EventType KeyUpEvent(SDL_Event evt);
+
 	static void AddDefaultTank();
 	static void MoveDefaultTank(bool forward = true);
 	static void StopMoveDefaultTank();
 	static void RotateDefaultTank(bool right = true);
 	static void StopRotateDefaultTank();
-
-	static SDL_EventType KeyDownEvent(SDL_Event evt);
-	static SDL_EventType KeyUpEvent(SDL_Event evt);
+	static void DefaultTankFire();
 
 private:
 	static int mUpdateTime;
 
 	static std::list<Tank*> mpTanks;
+	static std::list<Bullet*> mpBullets;
 	static Stage* mpStage;
 
 	static Tank* mDefaultTank;

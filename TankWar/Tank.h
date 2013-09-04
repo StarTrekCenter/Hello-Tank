@@ -1,9 +1,10 @@
 #pragma once
+#include "Item.h"
 #include "Moveable.h"
 #include "Bullet.h"
 #include "SDL.h"
 
-class Tank : public Moveable
+class Tank : public Item, public Moveable
 {
 public:
 	static float SPEED;
@@ -13,9 +14,10 @@ public:
 	Tank(int x, int y, float direction, float speed = SPEED, int size = SIZE, float rotateSpeed = ROTATE_SPEED);
 	~Tank(void);
 	
-	Bullet* Fire();
+	virtual void Update(int ms);
+	virtual void Draw();
 
-	void Draw();
+	Bullet* Fire();
 private:
 	int mSize;		//the width or height of the tank rectangle
 	SDL_Texture *mTexTank;

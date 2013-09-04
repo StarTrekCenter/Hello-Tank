@@ -16,6 +16,11 @@ float Tank::SPEED = 0.05f;
 float Tank::ROTATE_SPEED = 0.1f;
 int Tank::SIZE = 50;
 
+ void Tank::Update(int ms)
+{
+	MoveAndRotateItself(ms);
+}
+
 Bullet* Tank::Fire()
 {
 	Bullet* bul = new Bullet(mLocationX, mLocationY, mDirection);

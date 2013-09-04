@@ -1,8 +1,9 @@
 #pragma once
 #include "Moveable.h"
 #include "SDL.h"
+#include "Item.h"
 
-class Bullet : public Moveable
+class Bullet : public Item, public Moveable
 {
 	public:
 	static float SPEED;
@@ -11,7 +12,9 @@ public:
 	Bullet(int x, int y, float direction, float speed = SPEED, int size = SIZE);
 	~Bullet(void);
 
-	void Draw();
+	virtual void Update(int ms);
+	virtual void Draw();
+
 private:
 	int mSize;		//the width or height of the tank rectangle
 	SDL_Texture *mTexBullet;

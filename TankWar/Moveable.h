@@ -14,6 +14,10 @@ public:
 	virtual void SetStopMoving();
 	virtual void SetRotating(bool right = true);
 	virtual void SetStopRotating();
+	virtual bool IsMoving();
+	virtual bool IsMovingForward();
+	virtual bool IsRotating();
+	virtual bool IsRotatingRight();
 
 protected:
 	float mLocationX;

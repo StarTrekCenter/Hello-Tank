@@ -78,3 +78,23 @@ void Moveable::SetStopRotating()
 {
 	mIsRotating = false;
 }
+
+bool Moveable::IsMoving()
+{
+	return mIsMoving;
+}
+
+bool Moveable::IsMovingForward()
+{
+	return mIsMovingForward;
+}
+
+bool Moveable::IsRotating()
+{
+	return mIsRotating;
+}
+
+bool Moveable::IsRotatingRight()
+{
+	return mIsRotatingRight;
+}

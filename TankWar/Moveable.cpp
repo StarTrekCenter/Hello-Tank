@@ -5,13 +5,16 @@ Moveable::Moveable(int x, int y, float direction, float speed, float rotateSpeed
 	mIsMoving(false),
 	mIsMovingForward(true),
 	mIsRotating(false),
-	mIsRotatingRight(true)
+	mIsRotatingRight(true),
+	mSpeed(speed),
+	mRotateSpeed(rotateSpeed),
+	mLastLocationX(0),
+	mLastLocationY(0),
+	mLastDirection(0)
 {
 	mLocationX = x;
 	mLocationY = y;
 	mDirection = direction;
-	mSpeed = speed;
-	mRotateSpeed = rotateSpeed;
 }
 
 
@@ -19,8 +22,53 @@ Moveable::~Moveable(void)
 {
 }
 
+void Moveable::Update(int ms)
+{
+	MoveAndRotateItself(ms);
+}
+
+void Moveable::UndoUpdate(int ms)
+{
+	UndoMoveAndRotateItself(ms);
+}
+
+void Moveable::MoveAndRotateItself(Uint32 msTime)
+{
+	if (mIsMoving)
+	{
+		Move(msTime,mIsMovingForward);
+	}
+	if (mIsRotating)
+	{
+		Rotate(msTime,mIsRotatingRight);
+	}
+}
+
+void Moveable::UndoMoveAndRotateItself(Uint32 msTime)
+{
+	UndoMoveItself(msTime);
+	if (mIsRotating)
+	{
+		Rotate(msTime,!mIsRotatingRight);
+	}
+}
+
+void Moveable::UndoMoveItself(Uint32 msTime)
+{
+	if (mIsMoving)
+	{
+		mLocationX = mLastLocationX;
+		mLocationY = mLastLocationY;
+		mDirection = mLastDirection;
+	}
+}
+
 void Moveable::Move(Uint32 msTime, bool forward)
 {
+	mLastLocationX = mLocationX;
+	mLastLocationY = mLocationY;
+	mLastDirection = mDirection;
+
 	float rec = mDirection/180*M_PI;
 	if (forward)
 	{
@@ -43,17 +91,6 @@ void Moveable::Rotate(Uint32 msTime, bool right)
 	else
 	{
 		mDirection -= mRotateSpeed * msTime;
-	}
-}
-void Moveable::MoveAndRotateItself(Uint32 msTime)
-{
-	if (mIsMoving)
-	{
-		Move(msTime,mIsMovingForward);
-	}
-	if (mIsRotating)
-	{
-		Rotate(msTime,mIsRotatingRight);
 	}
 }
 

@@ -1,11 +1,18 @@
 #include "Tank.h"
+#include "Game.h"
 #include "Window.h"
 
 Tank::Tank(int x, int y, float direction, float speed, int size ,float rotateSpeed):
 	Moveable(x,  y, direction, speed, rotateSpeed),
-	mSize(size)
+	mCanFire(true),
+	mFireTimeCount(0),
+	mFireTimeLimit(FIRE_TIME_LIMIT)
 {
-	mTexTank = Window::LoadImage("../Res/Image/tank.gif");
+	mType = TANK;
+
+	mSize = size;
+
+	mTexDrawer = Window::LoadImage("../Res/Image/tank.gif");
 }
 
 Tank::~Tank(void)
@@ -15,25 +22,50 @@ Tank::~Tank(void)
 float Tank::SPEED = 0.05f;
 float Tank::ROTATE_SPEED = 0.1f;
 int Tank::SIZE = 50;
+int Tank::FIRE_TIME_LIMIT = 500;
 
- void Tank::Update(int ms)
+void Tank::Update(int ms)
 {
-	MoveAndRotateItself(ms);
+	UpdateFireTime(ms);
+	Moveable::Update(ms);
 }
 
-Bullet* Tank::Fire()
+void Tank::DoSometingIfHit(int ms)
 {
-	Bullet* bul = new Bullet(mLocationX, mLocationY, mDirection);
-	return bul;
+	Item* pHitItem = GetLastHitItem();
+	if (nullptr != pHitItem)
+	{
+		if (TANK == pHitItem->GetType())
+		{
+			UndoMoveItself(ms);
+		}
+	}
 }
 
-void Tank::Draw()
+void Tank::Fire()
 {
-	SDL_Rect rectTank;
-	rectTank.x = mLocationX - mSize/2;
-	rectTank.y = mLocationY - mSize/2;
-	rectTank.h = mSize;
-	rectTank.w = mSize;
+	if (mCanFire)
+	{
+		Bullet* bul = new Bullet(mLocationX, mLocationY, mDirection);
+		Game::AddItem(bul);
+		mCanFire = false;
+	}
+}
 
-	Window::Draw(mTexTank,rectTank,NULL,mDirection);
+bool Tank::GetCanFire()
+{
+	return mCanFire;
+}
+
+void Tank::UpdateFireTime(int ms)
+{
+	if (!mCanFire)
+	{
+		mFireTimeCount += ms;
+		if (mFireTimeCount > mFireTimeLimit)
+		{
+			mCanFire = true;
+			mFireTimeCount = 0;
+		}
+	}
 }

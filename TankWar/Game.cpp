@@ -16,36 +16,24 @@ Game::Game(void)
 
 Game::~Game(void)
 {
-	//if (nullptr != mpStage)
-	//{
-	//	delete mpStage;
-	//}
-
-	//list<Tank*>::iterator itTank;
-	//for (itTank = mpTanks.begin();itTank != mpTanks.end(); itTank++)
-	//{
-	//	if (nullptr != *itTank)
-	//	{
-	//		delete (*itTank);
-	//	}
-	//}
-	//mpTanks.clear();
 }
 
 Stage* Game::mpStage = nullptr;
+Timer* Game::mTimer = nullptr;
 int Game::mUpdateTime = UPDATE_TIME;
+int Game::mLastTimeEventTick = 0;
 std::list<Item*> Game::mpItems;
 Tank* Game::mDefaultTank;
 
 void Game::Start()
 {
+	srand(time(0));
+
 	InitWindowAndStage();
 	AddDefaultTank();
 
-	srand(0);
-
-	Timer time;
-	time.StartTimer(mUpdateTime,TimerEvent);
+	mTimer = new Timer();
+	mTimer->StartTimer(mUpdateTime,TimerEvent);
 	Event::AddEvent(SDL_KEYDOWN,KeyDownEvent);
 	Event::AddEvent(SDL_KEYUP,KeyUpEvent);
 	Event::StartListenEvent();
@@ -54,8 +42,7 @@ void Game::Start()
 void Game::InitWindowAndStage(int width, int height)
 {
 	Window::Init("TankWar", width, height);
-	mpStage = new Stage();
-	mpStage->Init(width,height);
+	mpStage = new Stage(width,height);
 }
 
 bool Game::IsInit()
@@ -68,11 +55,27 @@ void Game::Update()
 	if (IsInit())
 	{
 		list<Item*>::iterator itItem;
-		for (itItem = mpItems.begin();itItem != mpItems.end(); itItem++)
+		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
 		{
 			if (nullptr != *itItem)
 			{
 				(*itItem)->Update(mUpdateTime);
+			}
+		}
+
+		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
+		{
+			if (nullptr != *itItem)
+			{
+				(*itItem)->CheckHit();
+			}
+		}
+
+		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
+		{
+			if (nullptr != *itItem)
+			{
+				(*itItem)->DoSometingIfHit(mUpdateTime);
 			}
 		}
 	}
@@ -107,14 +110,51 @@ void Game::onUpdateTimer()
 
 SDL_EventType Game::TimerEvent(SDL_Event evt)
 {
+	SetTimeSpace((int) evt.user.data2);
+	mTimer->FlushTimeEvent();
 	onUpdateTimer();
 	return (SDL_EventType)evt.type;
+}
+
+void Game::SetTimeSpace(int tick)
+{
+	if (0 != mLastTimeEventTick)
+	{
+		mUpdateTime = tick - mLastTimeEventTick;
+	}
+	mLastTimeEventTick = tick;
+}
+
+void Game::AddItem(Item* pItem)
+{
+	mpItems.push_back(pItem);
+}
+
+void Game::RemoveItem(Item* pItem)
+{
+	mpItems.remove(pItem);
+	delete pItem;
+}
+
+list<Item*>::iterator Game::GetFirstImteIterator()
+{
+	return mpItems.begin();
+}
+
+list<Item*>::iterator Game::GetLastImteIterator()
+{
+	return mpItems.end();
+}
+
+ Item* Game::GetStage()
+{
+	return mpStage;
 }
 
 Tank* Game::AddTank(int x, int y, float direction)
 {
 	Tank* pTank = new Tank(x,y,direction);
-	mpItems.push_back(pTank);
+	AddItem(pTank);
 	return pTank;
 }
 
@@ -174,7 +214,6 @@ void Game::AddDefaultTank()
 {
 	if (IsInit())
 	{
-		srand((int)time(NULL) * 100);
 		int x = rand()*mpStage->GetWidth()/RAND_MAX;
 		int y = rand()*mpStage->GetHeight()/RAND_MAX;
 		float dire = rand()*360/RAND_MAX;
@@ -203,8 +242,7 @@ void Game::StopRotateDefaultTank()
 }
 void Game::DefaultTankFire()
 {
-	Bullet* pBullet = mDefaultTank->Fire();
-	mpItems.push_back(pBullet);
+	mDefaultTank->Fire();
 }
 
 void Game::AddRandomTank()
@@ -215,6 +253,6 @@ void Game::AddRandomTank()
 		int y = rand()*mpStage->GetHeight()/RAND_MAX;
 		float dire = rand()*360/RAND_MAX;
 		RandomTank* pTank = new RandomTank(x,y,dire);
-		mpItems.push_back(pTank);
+		AddItem(pTank);
 	}
 }

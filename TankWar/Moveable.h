@@ -1,15 +1,23 @@
 #pragma once
+#include "Drawer.h"
 #include "SDL.h"
 
-class Moveable
+class Moveable : public Drawer
 {
 public:
 	Moveable(int x, int y, float direction, float speed, float rotateSpeed = 0);
 	~Moveable(void);
 
+	virtual void Update(int ms);
+	virtual void UndoUpdate(int ms);
+	
+	virtual void MoveAndRotateItself(Uint32 msTime);
+	virtual void UndoMoveAndRotateItself(Uint32 msTime);
+	virtual void UndoMoveItself(Uint32 msTime);
+
 	virtual void Move(Uint32 msTime, bool forward = true);
 	virtual void Rotate(Uint32 msTime, bool right = true);
-	virtual void MoveAndRotateItself(Uint32 msTime);
+	
 	virtual void SetMoving(bool forward = true);
 	virtual void SetStopMoving();
 	virtual void SetRotating(bool right = true);
@@ -20,9 +28,6 @@ public:
 	virtual bool IsRotatingRight();
 
 protected:
-	float mLocationX;
-	float mLocationY;
-	float mDirection;	//0 => x-axis,  90 =>y-axis
 	float mSpeed;
 	float mRotateSpeed;
 
@@ -30,5 +35,10 @@ protected:
 	bool mIsMovingForward;
 	bool mIsRotating;
 	bool mIsRotatingRight;
+
+	float mLastLocationX;
+	float mLastLocationY;
+	float mLastDirection;
+
 };
 

@@ -3,7 +3,7 @@
 #include "SDL.h"
 #include "Item.h"
 
-class Bullet : public Item, public Moveable
+class Bullet : public Moveable
 {
 	public:
 	static float SPEED;
@@ -13,9 +13,8 @@ public:
 	~Bullet(void);
 
 	virtual void Update(int ms);
-	virtual void Draw();
+	virtual void DoSometingIfHit(int ms);
 
-private:
-	int mSize;		//the width or height of the tank rectangle
-	SDL_Texture *mTexBullet;
+protected:
+	bool mIsHitted;
 };

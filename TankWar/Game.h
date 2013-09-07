@@ -1,10 +1,10 @@
 #pragma once
 #include <list>
 #include "SDL.h"
+#include "Item.h"
+#include "Stage.h"#include "Moveable.h"
 #include "Tank.h"
-#include "Stage.h"
 #include "Bullet.h"
-#include "Moveable.h"
 
 class Game
 {
@@ -39,13 +39,13 @@ public:
 	static void StopRotateDefaultTank();
 	static void DefaultTankFire();
 
+	static void AddRandomTank();
+
 private:
 	static int mUpdateTime;
 
-	static std::list<Tank*> mpTanks;
-	static std::list<Bullet*> mpBullets;
+	static std::list<Item*> mpItems;
 	static Stage* mpStage;
-
 	static Tank* mDefaultTank;
 };
 

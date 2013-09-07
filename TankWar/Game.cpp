@@ -5,6 +5,8 @@
 #include <math.h>
 #include <ctime>
 
+#include "RandomTank.h"
+
 using namespace std;
 
 Game::Game(void)
@@ -32,14 +34,15 @@ Game::~Game(void)
 
 Stage* Game::mpStage = nullptr;
 int Game::mUpdateTime = UPDATE_TIME;
-std::list<Tank*> Game::mpTanks;
-std::list<Bullet*> Game::mpBullets;
+std::list<Item*> Game::mpItems;
 Tank* Game::mDefaultTank;
 
 void Game::Start()
 {
 	InitWindowAndStage();
 	AddDefaultTank();
+
+	srand(0);
 
 	Timer time;
 	time.StartTimer(mUpdateTime,TimerEvent);
@@ -64,21 +67,12 @@ void Game::Update()
 {
 	if (IsInit())
 	{
-		list<Tank*>::iterator itTank;
-		for (itTank = mpTanks.begin();itTank != mpTanks.end(); itTank++)
+		list<Item*>::iterator itItem;
+		for (itItem = mpItems.begin();itItem != mpItems.end(); itItem++)
 		{
-			if (nullptr != *itTank)
+			if (nullptr != *itItem)
 			{
-				(*itTank)->MoveAndRotateItself(mUpdateTime);
-			}
-		}
-		
-		list<Bullet*>::iterator itBullet;
-		for (itBullet = mpBullets.begin();itBullet != mpBullets.end(); itBullet++)
-		{
-			if (nullptr != *itBullet)
-			{
-				(*itBullet)->MoveAndRotateItself(mUpdateTime);
+				(*itItem)->Update(mUpdateTime);
 			}
 		}
 	}
@@ -92,20 +86,12 @@ void Game::DrawAll()
 
 		mpStage->Draw();
 
-		list<Tank*>::iterator itTank;
-		for (itTank = mpTanks.begin();itTank != mpTanks.end(); itTank++)
+		list<Item*>::iterator itItem;
+		for (itItem = mpItems.begin();itItem != mpItems.end(); itItem++)
 		{
-			if (nullptr != *itTank)
+			if (nullptr != *itItem)
 			{
-				(*itTank)->Draw();
-			}
-		}
-		list<Bullet*>::iterator itBullet;
-		for (itBullet = mpBullets.begin();itBullet != mpBullets.end(); itBullet++)
-		{
-			if (nullptr != *itBullet)
-			{
-				(*itBullet)->Draw();
+				(*itItem)->Draw();
 			}
 		}
 
@@ -128,7 +114,7 @@ SDL_EventType Game::TimerEvent(SDL_Event evt)
 Tank* Game::AddTank(int x, int y, float direction)
 {
 	Tank* pTank = new Tank(x,y,direction);
-	mpTanks.push_back(pTank);
+	mpItems.push_back(pTank);
 	return pTank;
 }
 
@@ -174,6 +160,9 @@ SDL_EventType Game::KeyUpEvent(SDL_Event evt)
 	case SDLK_SPACE:
 		DefaultTankFire();
 		break;
+	case SDLK_a:
+		AddRandomTank();
+		break;
 	default:
 		break;
 	}
@@ -185,7 +174,7 @@ void Game::AddDefaultTank()
 {
 	if (IsInit())
 	{
-		srand((int)time(0));
+		srand((int)time(NULL) * 100);
 		int x = rand()*mpStage->GetWidth()/RAND_MAX;
 		int y = rand()*mpStage->GetHeight()/RAND_MAX;
 		float dire = rand()*360/RAND_MAX;
@@ -215,5 +204,17 @@ void Game::StopRotateDefaultTank()
 void Game::DefaultTankFire()
 {
 	Bullet* pBullet = mDefaultTank->Fire();
-	mpBullets.push_back(pBullet);
+	mpItems.push_back(pBullet);
+}
+
+void Game::AddRandomTank()
+{
+	if (IsInit())
+	{
+		int x = rand()*mpStage->GetWidth()/RAND_MAX;
+		int y = rand()*mpStage->GetHeight()/RAND_MAX;
+		float dire = rand()*360/RAND_MAX;
+		RandomTank* pTank = new RandomTank(x,y,dire);
+		mpItems.push_back(pTank);
+	}
 }

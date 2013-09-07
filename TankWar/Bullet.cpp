@@ -18,6 +18,11 @@ Bullet::~Bullet(void)
 float Bullet::SPEED = 0.5f;
 int Bullet::SIZE = 5;
 
+ void Bullet::Update(int ms)
+{
+	MoveAndRotateItself(ms);
+}
+
 void Bullet::Draw()
 {
 	SDL_Rect rectTank;

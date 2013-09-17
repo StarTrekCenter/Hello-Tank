@@ -6,7 +6,8 @@ Tank::Tank(int x, int y, float direction, float speed, int size ,float rotateSpe
 	Moveable(x,  y, direction, speed, rotateSpeed),
 	mCanFire(true),
 	mFireTimeCount(0),
-	mFireTimeLimit(FIRE_TIME_LIMIT)
+	mFireTimeLimit(FIRE_TIME_LIMIT),
+	mIsHitted(false)
 {
 	mType = TANK;
 
@@ -26,8 +27,15 @@ int Tank::FIRE_TIME_LIMIT = 500;
 
 void Tank::Update(int ms)
 {
-	UpdateFireTime(ms);
-	Moveable::Update(ms);
+	if (mIsHitted)
+	{
+		Game::RemoveItem(this);
+	}
+	else
+	{
+		UpdateFireTime(ms);
+		Moveable::Update(ms);
+	}
 }
 
 void Tank::DoSometingIfHit(int ms)
@@ -39,6 +47,13 @@ void Tank::DoSometingIfHit(int ms)
 		{
 			UndoMoveItself(ms);
 		}
+		if (BULLET == pHitItem->GetType())
+		{
+			if (!((Bullet*)pHitItem)->HitItself(this))
+			{
+				mIsHitted = true;
+			}
+		}
 	}
 }
 
@@ -46,7 +61,7 @@ void Tank::Fire()
 {
 	if (mCanFire)
 	{
-		Bullet* bul = new Bullet(mLocationX, mLocationY, mDirection);
+		Bullet* bul = new Bullet(this, mLocationX, mLocationY, mDirection);
 		Game::AddItem(bul);
 		mCanFire = false;
 	}

@@ -27,5 +27,6 @@ private:
 	int mFireTimeCount;
 	bool mCanFire;
 	
+	bool mIsHitted;
 };
 

@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Game.h"
 
-Bullet::Bullet(int x, int y, float direction, float speed, int size):
+Bullet::Bullet(Item* pItem, int x, int y, float direction, float speed, int size):
 	Moveable(x, y, direction, speed),
 	mIsHitted(false)
 {
@@ -13,6 +13,8 @@ Bullet::Bullet(int x, int y, float direction, float speed, int size):
 	mIsMoving = true;
 	mIsMovingForward = true;
 	mTexDrawer = Window::LoadImage("../Res/Image/bullet.gif");
+
+	mpOwner = pItem;
 }
 
 
@@ -40,6 +42,14 @@ void Bullet::DoSometingIfHit(int ms)
 	Item* pHitItem = GetLastHitItem();
 	if (nullptr != pHitItem)
 	{
-		mIsHitted = true;
+		if (!HitItself(pHitItem))
+		{
+			mIsHitted = true;
+		}
 	}
+}
+
+bool Bullet::HitItself(Item* pItem)
+{
+	return pItem == mpOwner;
 }

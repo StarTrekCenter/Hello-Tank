@@ -54,28 +54,38 @@ void Game::Update()
 {
 	if (IsInit())
 	{
+		Item* pItem;
 		list<Item*>::iterator itItem;
-		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
+		itItem = mpItems.begin();
+		while (itItem != mpItems.end())
 		{
-			if (nullptr != *itItem)
+			pItem = *itItem;
+			itItem ++;
+			if (nullptr != pItem)
 			{
-				(*itItem)->Update(mUpdateTime);
+				pItem->Update(mUpdateTime);
 			}
 		}
 
-		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
+		itItem = mpItems.begin();
+		while (itItem != mpItems.end())
 		{
-			if (nullptr != *itItem)
+			pItem = *itItem;
+			itItem ++;
+			if (nullptr != pItem)
 			{
-				(*itItem)->CheckHit();
+				pItem->CheckHit();
 			}
 		}
 
-		for (itItem = mpItems.end();itItem != mpItems.begin(); itItem++)
+		itItem = mpItems.begin();
+		while (itItem != mpItems.end())
 		{
-			if (nullptr != *itItem)
+			pItem = *itItem;
+			itItem ++;
+			if (nullptr != pItem)
 			{
-				(*itItem)->DoSometingIfHit(mUpdateTime);
+				pItem->DoSometingIfHit(mUpdateTime);
 			}
 		}
 	}

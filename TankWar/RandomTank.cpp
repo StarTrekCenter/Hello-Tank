@@ -9,7 +9,6 @@ RandomTank::RandomTank(int x, int y, float direction, float speed, int size ,flo
 	mUpdateTime(UPDATE_TIME),
 	mTimeCount(0)
 {
-	srand((int)time(0));
 }
 
 int RandomTank::UPDATE_TIME = 100;
@@ -25,6 +24,7 @@ void RandomTank::Update(int ms)
 	{
 		RandomChangeMove();
 		RandomChangeRotate();
+		RandomFire();
 		mTimeCount = 0;
 	}
 
@@ -66,10 +66,10 @@ void RandomTank::RandomChangeRotate()
 	}
 }
 
-	//void RandomTank::RandomFire()
-	//{
-	//	if (rand() > (RAND_MAX*3/4))
-	//	{
-	//		Fire();
-	//	}
-	//}
+	void RandomTank::RandomFire()
+	{
+		if (rand() > (RAND_MAX*3/4))
+		{
+			Fire();
+		}
+	}

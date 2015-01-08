@@ -73,6 +73,12 @@ void Window::Draw(SDL_Texture *tex, SDL_Rect &dstRect, SDL_Rect *clip ,float ang
 	SDL_RenderCopyEx(mRenderer, tex, clip, &dstRect, angle, &pivot, flip);
 }
 
+//Draw an SDL_Rect
+void Window::DrawRect(SDL_Rect* rect)
+{
+	SDL_RenderDrawRect(mRenderer,rect);
+}
+
 //Load an image
 SDL_Texture* Window::LoadImage(string file)
 {

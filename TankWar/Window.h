@@ -22,6 +22,8 @@ public:
 	//Draw an SDL_Texture
 	static void Draw(SDL_Texture *tex, SDL_Rect &dstRect, SDL_Rect *clip = NULL,float angle = 0.0, 
 				  int xPivot = 0, int yPivot = 0,SDL_RendererFlip flip = SDL_FLIP_NONE);
+	//Draw an SDL_Rect
+	static void DrawRect(SDL_Rect* rect);
 	//Load an image
 	static SDL_Texture* LoadImage(std::string file);
 	//Render some text

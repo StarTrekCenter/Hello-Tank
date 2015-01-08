@@ -46,6 +46,11 @@ void Timer::StopTimer()
 	}
 }
 
+void Timer::FlushTimeEvent()
+{
+	SDL_FlushEvent(mTimeEventType);
+}
+
 int Timer::TimerThread(void *data)
 {
 	Timer* timer = (Timer*)data;
@@ -55,7 +60,7 @@ int Timer::TimerThread(void *data)
 		while(timer->mTimeStarted)
 		{
 			SDL_Delay(timer->mTimeDelay);
-			Event::PushEvent(timer->mTimeEventType,TIME_CODE,timer->mUserDate,nullptr);
+			Event::PushEvent(timer->mTimeEventType,TIME_CODE,timer->mUserDate,(void*)SDL_GetTicks());
 		}
 	}
 

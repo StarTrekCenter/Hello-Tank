@@ -1,13 +1,20 @@
 #include "Bullet.h"
 #include "Window.h"
+#include "Game.h"
 
-Bullet::Bullet(int x, int y, float direction, float speed, int size):
+Bullet::Bullet(Item* pItem, int x, int y, float direction, float speed, int size):
 	Moveable(x, y, direction, speed),
-	mSize(size)
+	mIsHitted(false)
 {
+	mType = BULLET;
+
+	mSize = size;
+
 	mIsMoving = true;
 	mIsMovingForward = true;
-	mTexBullet = Window::LoadImage("../Res/Image/bullet.gif");
+	mTexDrawer = Window::LoadImage("../Res/Image/bullet.gif");
+
+	mpOwner = pItem;
 }
 
 
@@ -18,18 +25,31 @@ Bullet::~Bullet(void)
 float Bullet::SPEED = 0.5f;
 int Bullet::SIZE = 5;
 
- void Bullet::Update(int ms)
+void Bullet::Update(int ms)
 {
-	MoveAndRotateItself(ms);
+	if (mIsHitted)
+	{
+		Game::RemoveItem(this);
+	}
+	else
+	{
+		Moveable::Update(ms);
+	}
 }
 
-void Bullet::Draw()
+void Bullet::DoSometingIfHit(int ms)
 {
-	SDL_Rect rectTank;
-	rectTank.x = mLocationX - mSize/2;
-	rectTank.y = mLocationY - mSize/2;
-	rectTank.h = mSize;
-	rectTank.w = mSize;
+	Item* pHitItem = GetLastHitItem();
+	if (nullptr != pHitItem)
+	{
+		if (!HitItself(pHitItem))
+		{
+			mIsHitted = true;
+		}
+	}
+}
 
-	Window::Draw(mTexBullet,rectTank,NULL,mDirection);
+bool Bullet::HitItself(Item* pItem)
+{
+	return pItem == mpOwner;
 }

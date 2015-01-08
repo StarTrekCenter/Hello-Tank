@@ -12,7 +12,7 @@ public:
 private:
 	void RandomChangeMove();
 	void RandomChangeRotate();
-	//void RandomFire();
+	void RandomFire();
 
 	static int UPDATE_TIME ; 
 	int mUpdateTime;

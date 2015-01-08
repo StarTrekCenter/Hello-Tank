@@ -12,6 +12,8 @@ public:
 
 	void StartTimer(Uint32 ms,SDL_EventType(*onTimer)(SDL_Event),void* userData = nullptr);
 	void StopTimer();
+	
+	void FlushTimeEvent();
 
 private:
 	//SDL_ThreadFunction TimerThread;

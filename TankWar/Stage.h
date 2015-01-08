@@ -1,14 +1,19 @@
 #pragma once
+#include "Drawer.h"
 #include "SDL.h"
 
-class Stage
+class Stage : public Drawer 
 {
 public:
-	Stage(void);
+	Stage(int width, int height);
 	~Stage(void);
 
-	void Init(int width, int height);
-	void Draw();
+	virtual void Update(int ms);
+	virtual void UndoUpdate(int ms);
+	virtual void DoSometingIfHit(int ms);
+	virtual void Draw();
+
+	virtual SDL_Rect GetItemRect();
 
 	int GetWidth();
 	int GetHeight();
@@ -16,6 +21,5 @@ public:
 private:
 	int mWidth;
 	int mHeight;
-
-	SDL_Texture *mTexBackground;
+	SDL_Rect mRectStage;
 };
